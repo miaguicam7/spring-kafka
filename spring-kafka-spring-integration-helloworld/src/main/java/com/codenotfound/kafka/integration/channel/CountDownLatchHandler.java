@@ -12,7 +12,7 @@ public class CountDownLatchHandler implements MessageHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CountDownLatchHandler.class);
 
-  private CountDownLatch latch = new CountDownLatch(10);
+  private CountDownLatch latch = new CountDownLatch(4);
 
   public CountDownLatch getLatch() {
     return latch;
