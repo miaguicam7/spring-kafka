@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.codenotfound.kafka.integration.entity.Person;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,8 @@ public class SpringKafkaIntegrationApplicationTest {
 
     private static String SPRING_INTEGRATION_KAFKA_TOPIC = "integration_topic";
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @ClassRule
     public static KafkaEmbedded embeddedKafka =
             new KafkaEmbedded(1, true, SPRING_INTEGRATION_KAFKA_TOPIC);
@@ -52,10 +56,10 @@ public class SpringKafkaIntegrationApplicationTest {
 
         LOGGER.info("sending 4 messages");
 
-        Flux.just(new GenericMessage<>("Hello Spring Integration Kafka 1!", headers),
-                new GenericMessage<>("Hello Spring Integration Kafka 2!", headers),
-                new GenericMessage<>("Hello Spring Integration Kafka 3!", headers),
-                new GenericMessage<>("Hello Spring Integration Kafka 4!", headers))
+        Flux.just(new GenericMessage<>(objectMapper.writeValueAsString(new Person("1","name 1")), headers),
+                new GenericMessage<>(objectMapper.writeValueAsString(new Person("2","name 2")), headers),
+                new GenericMessage<>(objectMapper.writeValueAsString(new Person("3","name 3")), headers),
+                new GenericMessage<>(objectMapper.writeValueAsString(new Person("4","name 4")), headers))
                 .doOnNext(c->producingChannel.send(c)).subscribe();
 
         countDownLatchHandler.getLatch().await(10000, TimeUnit.MILLISECONDS);
